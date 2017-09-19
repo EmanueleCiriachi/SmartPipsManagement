@@ -9,7 +9,7 @@ define vPowerToEngines DX24
 define vPowerToWeapons DX25
 define vPowerBalance DX26
 
-// This defines which controls
+// This defines which peripheral control are going to be assigned to Systems, Thrusters, Weapons, and Reset respectively
 define SysKey H1L
 define ThrKey H1U
 define WepKey H1R
