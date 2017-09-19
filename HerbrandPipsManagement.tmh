@@ -1,0 +1,154 @@
+include "HerbrandPipsManagementVariables.tmh"
+
+int B420toB240;
+int B402toB420;
+int B204toB024;
+int B024toB042;
+int B222toB240;
+
+int B240toB420;
+int B042toB240;
+int B024toB204;
+int B204toB402;
+int B222toB402;
+
+int B042toB024;
+int B240toB042;
+int B420toB402;
+int B402toB204;
+int B222toB024;
+
+int cVB204;
+int cVB240;
+int cVB402;
+int cVB420;
+int cVB024;
+int cVB042;
+int cVB222;
+
+int doNothing;
+int PowerStatus = B222;
+
+int InitSmartPipsManagement() {
+	// vPowerUp
+	B420toB240 = CHAIN(PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines);
+	B402toB420 = CHAIN(PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems);
+	B204toB024 = CHAIN(PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons);
+	B024toB042 = CHAIN(PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines);
+	B222toB240 = CHAIN(PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines);
+
+	// vPowerLeft
+	B240toB420 = CHAIN(PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems);
+	B042toB240 = CHAIN(PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines);
+	B024toB204 = CHAIN(PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons);
+	B204toB402 = CHAIN(PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems);
+	B222toB402 = CHAIN(PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems);
+
+	// vPowerRight
+	B042toB024 = CHAIN(PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons);
+	B240toB042 = CHAIN(PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines);
+	B420toB402 = CHAIN(PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToSystems, D(), PULSE + vPowerToSystems);
+	B402toB204 = CHAIN(PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons);
+	B222toB024 = CHAIN(PULSE + vPowerToEngines, D(), PULSE + vPowerToEngines, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons, D(), PULSE + vPowerToWeapons);
+
+	doNothing = EXEC(
+		"doReallyNothing();"
+	);
+
+	cVB024 = EXEC(
+		"changeVariableB024();"
+	);
+	cVB042 = EXEC(
+		"changeVariableB042();"
+	);
+	cVB204 = EXEC(
+		"changeVariableB204();"
+	);
+	cVB240 = EXEC(
+		"changeVariableB240();"
+	);
+	cVB402 = EXEC(
+		"changeVariableB402();"
+	);
+	cVB420 = EXEC(
+		"changeVariableB420();"
+	);
+	cVB222 = EXEC(
+		"changeVariableB222();"
+	);
+
+    MapKey(&Peripheral, ResKey, CHAIN(cVB222, CHAIN(PULSE + vPowerBalance)));
+    MapKey(&Peripheral, ThrKey, CHAIN(cVB240, B222toB240));
+    MapKey(&Peripheral, SysKey, CHAIN(cVB402, B222toB402));
+    MapKey(&Peripheral, WepKey, CHAIN(cVB024, B222toB024));
+
+	printf("SmartPipsManagement: Initialization complete\x0a");
+}
+
+int doReallyNothing() {
+	printf("Nothing!\x0a");
+}
+
+int changeVariableB204() {
+	PowerStatus = B204;
+
+	MapKey(&Peripheral, ThrKey, CHAIN(cVB024, B204toB024));
+	MapKey(&Peripheral, SysKey, CHAIN(cVB402, B204toB402));
+	MapKey(&Peripheral, WepKey, doNothing);
+
+	printf("Current State: B204\x0a");
+}
+int changeVariableB240() {
+	PowerStatus = B240;
+
+	MapKey(&Peripheral, ThrKey, doNothing);
+	MapKey(&Peripheral, SysKey, CHAIN(cVB420, B240toB420));
+	MapKey(&Peripheral, WepKey, CHAIN(cVB042, B240toB042));
+
+	printf("Current State: B240\x0a");
+}
+int changeVariableB402() {
+	PowerStatus = B402;
+
+	MapKey(&Peripheral, ThrKey, CHAIN(cVB420, B402toB420));
+	MapKey(&Peripheral, SysKey, doNothing);
+	MapKey(&Peripheral, WepKey, CHAIN(cVB204, B402toB204));
+
+	printf("Current State: B402\x0a");
+}
+int changeVariableB420() {
+	PowerStatus = B420;
+
+	MapKey(&Peripheral, ThrKey, CHAIN(cVB240, B420toB240));
+	MapKey(&Peripheral, WepKey, CHAIN(cVB402, B420toB402));
+	MapKey(&Peripheral, SysKey, doNothing);
+
+	printf("Current State: B420\x0a");
+}
+int changeVariableB024() {
+	PowerStatus = B024;
+
+	MapKey(&Peripheral, ThrKey, CHAIN(cVB042, B024toB042));
+	MapKey(&Peripheral, SysKey, CHAIN(cVB204, B024toB204));
+	MapKey(&Peripheral, WepKey, doNothing);
+
+	printf("Current State: B024\x0a");
+}
+int changeVariableB042() {
+	PowerStatus = B042;
+
+	MapKey(&Peripheral, ThrKey, doNothing);
+	MapKey(&Peripheral, SysKey, CHAIN(cVB240, B042toB240));
+	MapKey(&Peripheral, WepKey, CHAIN(cVB024, B042toB024));
+
+	printf("Current State: B042\x0a");
+}
+int changeVariableB222() {
+	PowerStatus = B222;
+
+    MapKey(&Peripheral, ThrKey, CHAIN(cVB240, B222toB240));
+    MapKey(&Peripheral, SysKey, CHAIN(cVB402, B222toB402));
+    MapKey(&Peripheral, WepKey, CHAIN(cVB024, B222toB024));
+
+	printf("Current State: B222\x0a");
+}

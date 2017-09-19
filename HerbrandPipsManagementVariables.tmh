@@ -1,0 +1,16 @@
+// Which Thrustmaster peripheral is going to be used; from target2.tmh, the aliases are:
+// alias Throttle	= "VID_044F&PID_0404", Joystick	= "VID_044F&PID_0402", LMFD		= "VID_044F&PID_b351";
+// alias RMFD 		= "VID_044F&PID_b352", HCougar	= "VID_044F&PID_0400", T16000	= "VID_044F&PID_B10A";
+define Peripheral Joystick
+
+// Those are the control bindings used to divert power to Systems, Engines, Weapons, and to reset power balance
+define vPowerToSystems DX23
+define vPowerToEngines DX24
+define vPowerToWeapons DX25
+define vPowerBalance DX26
+
+// This defines which controls
+define SysKey H1L
+define ThrKey H1U
+define WepKey H1R
+define ResKey H1D
